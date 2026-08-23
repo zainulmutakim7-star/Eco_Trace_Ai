@@ -118,11 +118,24 @@ export default function ScannerPage() {
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
-    setFileName(file.name);
+    const name = file.name;
+    setFileName(name);
     const reader = new FileReader();
     reader.onload = (e) => {
       setPreviewUrl(e.target?.result as string);
-      setState("preview");
+      // Auto-detect waste type based on file name
+      const lowerName = name.toLowerCase();
+      let selectedResult: AnalysisResult | undefined;
+      if (lowerName.includes("botol") || lowerName.includes("plastic")) {
+        selectedResult = mockResults.find(r => r.category === "Anorganik Daur Ulang");
+      } else if (lowerName.includes("makanan") || lowerName.includes("organic") || lowerName.includes("sisa") || lowerName.includes("food")) {
+        selectedResult = mockResults.find(r => r.category === "Organik");
+      } else if (lowerName.includes("baterai") || lowerName.includes("battery")) {
+        selectedResult = mockResults.find(r => r.category === "B3 (Berbahaya)");
+      }
+      const resultToUse = selectedResult || mockResults[0];
+      setState("result");
+      setResult(resultToUse);
     };
     reader.readAsDataURL(file);
   }, []);
@@ -145,14 +158,7 @@ export default function ScannerPage() {
     [handleFile]
   );
 
-  const startAnalysis = useCallback(() => {
-    setState("analyzing");
-    const randomResult = mockResults[Math.floor(Math.random() * mockResults.length)];
-    setTimeout(() => {
-      setResult(randomResult);
-      setState("result");
-    }, 2500);
-  }, []);
+
 
   const reset = useCallback(() => {
     setState("idle");
@@ -216,47 +222,6 @@ export default function ScannerPage() {
                 onChange={handleInputChange}
               />
             </label>
-          </div>
-        )}
-
-        {/* ── PREVIEW: Image Preview + Analyze Button ── */}
-        {state === "preview" && previewUrl && (
-          <div className="animate-slide-up space-y-6">
-            <div className="rounded-2xl glass overflow-hidden">
-              <div className="relative aspect-video bg-slate-900/50 flex items-center justify-center overflow-hidden">
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="max-h-full max-w-full object-contain"
-                />
-              </div>
-              <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-200 truncate max-w-[200px]">{fileName}</p>
-                    <p className="text-xs text-slate-500">Siap untuk dianalisis</p>
-                  </div>
-                </div>
-                <div className="flex gap-3 w-full sm:w-auto">
-                  <button
-                    onClick={reset}
-                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl glass text-slate-400 text-sm font-medium hover:text-slate-200 hover:bg-slate-700/30 transition-all"
-                  >
-                    Ganti
-                  </button>
-                  <button
-                    onClick={startAnalysis}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white text-sm font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
-                  >
-                    <ScanLine className="w-4 h-4" />
-                    Analisis dengan AI
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         )}
 

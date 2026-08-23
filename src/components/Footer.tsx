@@ -1,5 +1,6 @@
 import { Leaf, ExternalLink, Heart } from "lucide-react";
 import Link from "next/link";
+import CompetitionLogos from "./CompetitionLogos";
 
 export default function Footer() {
   return (
@@ -63,11 +64,11 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Kompetisi</h3>
             <p className="text-sm text-slate-500 leading-relaxed">
-              Dikembangkan untuk Kompetisi Web Development & Inovasi AI Berkelanjutan 2026.
+              Dikembangkan untuk kompetisi bertema: &ldquo;Shaping Tomorrow: Digital Technology, Artificial Intelligence, and Sustainable Communities.&rdquo;
             </p>
             <div className="flex items-center gap-3">
               <a
-                href="https://github.com"
+                href="https://github.com/zainulmutakim7-star/Eco_Trace_Ai"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all"
@@ -76,6 +77,7 @@ export default function Footer() {
                 <ExternalLink className="w-4 h-4" />
               </a>
             </div>
+            <CompetitionLogos />
           </div>
         </div>
 
